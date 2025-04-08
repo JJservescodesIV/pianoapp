@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Synthwave Piano</title>
+    <title>Synthwave Keyboard</title>
     <style>
         /* General Reset */
         * {
@@ -23,25 +23,25 @@
         }
 
         .piano-container {
+            position: relative;
             display: flex;
-            flex-wrap: nowrap;
             justify-content: center;
             align-items: flex-end;
-            position: relative;
-            max-width: 90%;
+            width: 100%;
+            max-width: 1000px;
             height: 60%;
         }
 
         .key {
+            position: relative;
             flex: 1;
-            border: 2px solid #ff0080;
-            border-radius: 4px;
             height: 100%;
             margin: 0 2px;
-            position: relative;
+            border: 2px solid #ff0080;
+            border-radius: 5px;
+            background: linear-gradient(135deg, #ff0080, #ff80bf);
             cursor: pointer;
             transition: transform 0.1s, box-shadow 0.1s;
-            background: linear-gradient(135deg, #ff0080, #ff80bf);
             box-shadow: 0 0 15px rgba(255, 0, 128, 0.8);
         }
 
@@ -51,13 +51,13 @@
         }
 
         .key.black {
-            background: linear-gradient(135deg, #8000ff, #bf80ff);
-            height: 60%;
-            width: 80%;
-            z-index: 10;
             position: absolute;
             top: 0;
-            left: calc(50% - 40%);
+            height: 65%;
+            width: 60%;
+            background: linear-gradient(135deg, #8000ff, #bf80ff);
+            z-index: 10;
+            left: calc(100% - 30%);
             box-shadow: 0 0 15px rgba(128, 0, 255, 0.8);
         }
 
@@ -72,15 +72,23 @@
             left: 50%;
             transform: translateX(-50%);
             color: white;
-            font-size: 12px;
+            font-size: 14px;
             font-weight: bold;
             text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
             pointer-events: none;
         }
 
+        /* Adjustments for larger keys */
+        .key-container {
+            position: relative;
+            flex: 1;
+            height: 100%;
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
             .key-label {
-                font-size: 10px;
+                font-size: 12px;
             }
 
             .piano-container {
@@ -91,41 +99,56 @@
 </head>
 <body>
     <div class="piano-container">
-        <div class="key" data-note="C">
-            <span class="key-label">C</span>
+        <!-- White keys with black keys layered on top -->
+        <div class="key-container">
+            <div class="key" data-note="C">
+                <span class="key-label">C</span>
+            </div>
+            <div class="key black" data-note="C#">
+                <span class="key-label">C#</span>
+            </div>
         </div>
-        <div class="key black" data-note="C#">
-            <span class="key-label">C#</span>
+        <div class="key-container">
+            <div class="key" data-note="D">
+                <span class="key-label">D</span>
+            </div>
+            <div class="key black" data-note="D#">
+                <span class="key-label">D#</span>
+            </div>
         </div>
-        <div class="key" data-note="D">
-            <span class="key-label">D</span>
+        <div class="key-container">
+            <div class="key" data-note="E">
+                <span class="key-label">E</span>
+            </div>
         </div>
-        <div class="key black" data-note="D#">
-            <span class="key-label">D#</span>
+        <div class="key-container">
+            <div class="key" data-note="F">
+                <span class="key-label">F</span>
+            </div>
+            <div class="key black" data-note="F#">
+                <span class="key-label">F#</span>
+            </div>
         </div>
-        <div class="key" data-note="E">
-            <span class="key-label">E</span>
+        <div class="key-container">
+            <div class="key" data-note="G">
+                <span class="key-label">G</span>
+            </div>
+            <div class="key black" data-note="G#">
+                <span class="key-label">G#</span>
+            </div>
         </div>
-        <div class="key" data-note="F">
-            <span class="key-label">F</span>
+        <div class="key-container">
+            <div class="key" data-note="A">
+                <span class="key-label">A</span>
+            </div>
+            <div class="key black" data-note="A#">
+                <span class="key-label">A#</span>
+            </div>
         </div>
-        <div class="key black" data-note="F#">
-            <span class="key-label">F#</span>
-        </div>
-        <div class="key" data-note="G">
-            <span class="key-label">G</span>
-        </div>
-        <div class="key black" data-note="G#">
-            <span class="key-label">G#</span>
-        </div>
-        <div class="key" data-note="A">
-            <span class="key-label">A</span>
-        </div>
-        <div class="key black" data-note="A#">
-            <span class="key-label">A#</span>
-        </div>
-        <div class="key" data-note="B">
-            <span class="key-label">B</span>
+        <div class="key-container">
+            <div class="key" data-note="B">
+                <span class="key-label">B</span>
+            </div>
         </div>
     </div>
 
