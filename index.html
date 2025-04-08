@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synthwave Piano</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1c1c2e, #1a1a3d);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .piano-container {
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: center;
+            align-items: flex-end;
+            position: relative;
+            max-width: 90%;
+            height: 60%;
+        }
+
+        .key {
+            flex: 1;
+            border: 2px solid #ff0080;
+            border-radius: 4px;
+            height: 100%;
+            margin: 0 2px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+            background: linear-gradient(135deg, #ff0080, #ff80bf);
+            box-shadow: 0 0 15px rgba(255, 0, 128, 0.8);
+        }
+
+        .key:active {
+            transform: scale(0.98);
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.8);
+        }
+
+        .key.black {
+            background: linear-gradient(135deg, #8000ff, #bf80ff);
+            height: 60%;
+            width: 80%;
+            z-index: 10;
+            position: absolute;
+            top: 0;
+            left: calc(50% - 40%);
+            box-shadow: 0 0 15px rgba(128, 0, 255, 0.8);
+        }
+
+        .key.black:active {
+            transform: scale(0.95);
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.8);
+        }
+
+        .key-label {
+            position: absolute;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            .key-label {
+                font-size: 10px;
+            }
+
+            .piano-container {
+                height: 50%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="piano-container">
+        <div class="key" data-note="C">
+            <span class="key-label">C</span>
+        </div>
+        <div class="key black" data-note="C#">
+            <span class="key-label">C#</span>
+        </div>
+        <div class="key" data-note="D">
+            <span class="key-label">D</span>
+        </div>
+        <div class="key black" data-note="D#">
+            <span class="key-label">D#</span>
+        </div>
+        <div class="key" data-note="E">
+            <span class="key-label">E</span>
+        </div>
+        <div class="key" data-note="F">
+            <span class="key-label">F</span>
+        </div>
+        <div class="key black" data-note="F#">
+            <span class="key-label">F#</span>
+        </div>
+        <div class="key" data-note="G">
+            <span class="key-label">G</span>
+        </div>
+        <div class="key black" data-note="G#">
+            <span class="key-label">G#</span>
+        </div>
+        <div class="key" data-note="A">
+            <span class="key-label">A</span>
+        </div>
+        <div class="key black" data-note="A#">
+            <span class="key-label">A#</span>
+        </div>
+        <div class="key" data-note="B">
+            <span class="key-label">B</span>
+        </div>
+    </div>
+
+    <script>
+        // Define sounds for each note
+        const noteFrequencies = {
+            'C': 261.63,
+            'C#': 277.18,
+            'D': 293.66,
+            'D#': 311.13,
+            'E': 329.63,
+            'F': 349.23,
+            'F#': 369.99,
+            'G': 392.00,
+            'G#': 415.30,
+            'A': 440.00,
+            'A#': 466.16,
+            'B': 493.88
+        };
+
+        // Create the audio context
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        // Play a note
+        function playNote(note) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.frequency.setValueAtTime(noteFrequencies[note], audioContext.currentTime);
+            oscillator.type = 'sine';
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.start();
+            gainNode.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 1);
+            oscillator.stop(audioContext.currentTime + 1);
+        }
+
+        // Add event listeners to keys
+        const keys = document.querySelectorAll('.key');
+        keys.forEach(key => {
+            const note = key.dataset.note;
+
+            key.addEventListener('mousedown', () => playNote(note));
+            key.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                playNote(note);
+            });
+        });
+    </script>
+</body>
+</html>
