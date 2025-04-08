@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Synthwave Keyboard</title>
+    <title>Synthwave Keyboard with Octave Controls</title>
     <style>
         /* General Reset */
         * {
@@ -17,9 +17,9 @@
             background: linear-gradient(135deg, #1c1c2e, #1a1a3d);
             height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
         }
 
         .piano-container {
@@ -29,7 +29,7 @@
             align-items: flex-end;
             width: 100%;
             max-width: 1000px;
-            height: 60%;
+            height: 50%;
         }
 
         .key {
@@ -78,14 +78,47 @@
             pointer-events: none;
         }
 
-        /* Adjustments for larger keys */
         .key-container {
             position: relative;
             flex: 1;
             height: 100%;
         }
 
-        /* Responsive Design */
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            background: #ff0080;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.1s;
+            box-shadow: 0 0 15px rgba(255, 0, 128, 0.8);
+        }
+
+        button:hover {
+            background: #ff80bf;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .octave-display {
+            font-size: 20px;
+            color: white;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
         @media (max-width: 768px) {
             .key-label {
                 font-size: 12px;
@@ -94,11 +127,21 @@
             .piano-container {
                 height: 50%;
             }
+
+            button {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="piano-container">
+    <div class="controls">
+        <button id="prev-octave">Previous Octave</button>
+        <span class="octave-display" id="current-octave">Octave: 4</span>
+        <button id="next-octave">Next Octave</button>
+    </div>
+    <div class="piano-container" id="piano">
         <!-- White keys with black keys layered on top -->
         <div class="key-container">
             <div class="key" data-note="C">
@@ -153,8 +196,8 @@
     </div>
 
     <script>
-        // Define sounds for each note
-        const noteFrequencies = {
+        // Base frequencies for octave 4
+        const baseFrequencies = {
             'C': 261.63,
             'C#': 277.18,
             'D': 293.66,
@@ -169,15 +212,16 @@
             'B': 493.88
         };
 
-        // Create the audio context
+        let currentOctave = 4;
+
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-        // Play a note
         function playNote(note) {
             const oscillator = audioContext.createOscillator();
             const gainNode = audioContext.createGain();
+            const frequency = baseFrequencies[note] * Math.pow(2, currentOctave - 4);
 
-            oscillator.frequency.setValueAtTime(noteFrequencies[note], audioContext.currentTime);
+            oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
             oscillator.type = 'sine';
 
             oscillator.connect(gainNode);
@@ -188,7 +232,6 @@
             oscillator.stop(audioContext.currentTime + 1);
         }
 
-        // Add event listeners to keys
         const keys = document.querySelectorAll('.key');
         keys.forEach(key => {
             const note = key.dataset.note;
@@ -199,6 +242,27 @@
                 playNote(note);
             });
         });
+
+        // Octave controls
+        const octaveDisplay = document.getElementById('current-octave');
+
+        document.getElementById('prev-octave').addEventListener('click', () => {
+            if (currentOctave > 1) {
+                currentOctave--;
+                updateOctaveDisplay();
+            }
+        });
+
+        document.getElementById('next-octave').addEventListener('click', () => {
+            if (currentOctave < 8) {
+                currentOctave++;
+                updateOctaveDisplay();
+            }
+        });
+
+        function updateOctaveDisplay() {
+            octaveDisplay.textContent = `Octave: ${currentOctave}`;
+        }
     </script>
 </body>
 </html>
