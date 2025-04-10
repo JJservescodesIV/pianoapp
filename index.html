@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Synthwave Keyboard with Octave Controls</title>
+    <title>Synthwave Keyboard with Preset Bank</title>
     <style>
         /* General Reset */
         * {
@@ -92,7 +92,7 @@
             gap: 20px;
         }
 
-        button {
+        button, select {
             padding: 10px 20px;
             font-size: 16px;
             font-weight: bold;
@@ -105,15 +105,15 @@
             box-shadow: 0 0 15px rgba(255, 0, 128, 0.8);
         }
 
-        button:hover {
+        button:hover, select:hover {
             background: #ff80bf;
         }
 
-        button:active {
+        button:active, select:active {
             transform: scale(0.95);
         }
 
-        .octave-display {
+        .octave-display, .preset-display {
             font-size: 20px;
             color: white;
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
@@ -128,7 +128,7 @@
                 height: 50%;
             }
 
-            button {
+            button, select {
                 padding: 8px 15px;
                 font-size: 14px;
             }
@@ -140,6 +140,13 @@
         <button id="prev-octave">Previous Octave</button>
         <span class="octave-display" id="current-octave">Octave: 4</span>
         <button id="next-octave">Next Octave</button>
+        <select id="preset-select">
+            <option value="sine">Synth (Sine)</option>
+            <option value="square">Synth (Square)</option>
+            <option value="sawtooth">Synth (Sawtooth)</option>
+            <option value="triangle">Synth (Triangle)</option>
+            <option value="samples">Piano (Samples)</option>
+        </select>
     </div>
     <div class="piano-container" id="piano">
         <!-- White keys with black keys layered on top -->
@@ -216,20 +223,31 @@
 
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
+        // Play a note based on the selected preset
+        const presetSelect = document.getElementById('preset-select');
+
         function playNote(note) {
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            const frequency = baseFrequencies[note] * Math.pow(2, currentOctave - 4);
+            const selectedPreset = presetSelect.value;
 
-            oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-            oscillator.type = 'sine';
+            if (selectedPreset === 'samples') {
+                const audio = new Audio(`sounds/${note}${currentOctave}.mp3`);
+                audio.currentTime = 0;
+                audio.play();
+            } else {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                const frequency = baseFrequencies[note] * Math.pow(2, currentOctave - 4);
 
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
+                oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+                oscillator.type = selectedPreset; // Use waveform type (sine, square, etc.)
 
-            oscillator.start();
-            gainNode.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 1);
-            oscillator.stop(audioContext.currentTime + 1);
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+
+                oscillator.start();
+                gainNode.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 1);
+                oscillator.stop(audioContext.currentTime + 1);
+            }
         }
 
         const keys = document.querySelectorAll('.key');
