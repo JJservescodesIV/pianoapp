@@ -5,7 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Synthwave Keyboard with Preset Bank</title>
     <style>
-        /* General Reset */
+        :root {
+            --primary-color: #ff0080;
+            --secondary-color: #ff80bf;
+            --black-key-color: #8000ff;
+            --black-key-hover-color: #bf80ff;
+            --box-shadow: 0 0 15px rgba(255, 0, 128, 0.8);
+            --active-box-shadow: 0 0 25px rgba(255, 255, 255, 0.8);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -37,17 +45,17 @@
             flex: 1;
             height: 100%;
             margin: 0 2px;
-            border: 2px solid #ff0080;
+            border: 2px solid var(--primary-color);
             border-radius: 5px;
-            background: linear-gradient(135deg, #ff0080, #ff80bf);
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             cursor: pointer;
             transition: transform 0.1s, box-shadow 0.1s;
-            box-shadow: 0 0 15px rgba(255, 0, 128, 0.8);
+            box-shadow: var(--box-shadow);
         }
 
         .key:active {
             transform: scale(0.98);
-            box-shadow: 0 0 25px rgba(255, 255, 255, 0.8);
+            box-shadow: var(--active-box-shadow);
         }
 
         .key.black {
@@ -55,7 +63,7 @@
             top: 0;
             height: 65%;
             width: 60%;
-            background: linear-gradient(135deg, #8000ff, #bf80ff);
+            background: linear-gradient(135deg, var(--black-key-color), var(--black-key-hover-color));
             z-index: 10;
             left: calc(100% - 30%);
             box-shadow: 0 0 15px rgba(128, 0, 255, 0.8);
@@ -63,7 +71,7 @@
 
         .key.black:active {
             transform: scale(0.95);
-            box-shadow: 0 0 25px rgba(255, 255, 255, 0.8);
+            box-shadow: var(--active-box-shadow);
         }
 
         .key-label {
@@ -97,16 +105,16 @@
             font-size: 16px;
             font-weight: bold;
             color: white;
-            background: #ff0080;
+            background: var(--primary-color);
             border: none;
             border-radius: 5px;
             cursor: pointer;
             transition: background 0.3s, transform 0.1s;
-            box-shadow: 0 0 15px rgba(255, 0, 128, 0.8);
+            box-shadow: var(--box-shadow);
         }
 
         button:hover, select:hover {
-            background: #ff80bf;
+            background: var(--secondary-color);
         }
 
         button:active, select:active {
@@ -137,10 +145,10 @@
 </head>
 <body>
     <div class="controls">
-        <button id="prev-octave">Previous Octave</button>
+        <button id="prev-octave" aria-label="Previous Octave">Previous Octave</button>
         <span class="octave-display" id="current-octave">Octave: 4</span>
-        <button id="next-octave">Next Octave</button>
-        <select id="preset-select">
+        <button id="next-octave" aria-label="Next Octave">Next Octave</button>
+        <select id="preset-select" aria-label="Select Preset">
             <option value="sine">Synth (Sine)</option>
             <option value="square">Synth (Square)</option>
             <option value="sawtooth">Synth (Sawtooth)</option>
@@ -151,59 +159,58 @@
     <div class="piano-container" id="piano">
         <!-- White keys with black keys layered on top -->
         <div class="key-container">
-            <div class="key" data-note="C">
+            <div class="key" data-note="C" aria-label="C">
                 <span class="key-label">C</span>
             </div>
-            <div class="key black" data-note="C#">
+            <div class="key black" data-note="C#" aria-label="C#">
                 <span class="key-label">C#</span>
             </div>
         </div>
         <div class="key-container">
-            <div class="key" data-note="D">
+            <div class="key" data-note="D" aria-label="D">
                 <span class="key-label">D</span>
             </div>
-            <div class="key black" data-note="D#">
+            <div class="key black" data-note="D#" aria-label="D#">
                 <span class="key-label">D#</span>
             </div>
         </div>
         <div class="key-container">
-            <div class="key" data-note="E">
+            <div class="key" data-note="E" aria-label="E">
                 <span class="key-label">E</span>
             </div>
         </div>
         <div class="key-container">
-            <div class="key" data-note="F">
+            <div class="key" data-note="F" aria-label="F">
                 <span class="key-label">F</span>
             </div>
-            <div class="key black" data-note="F#">
+            <div class="key black" data-note="F#" aria-label="F#">
                 <span class="key-label">F#</span>
             </div>
         </div>
         <div class="key-container">
-            <div class="key" data-note="G">
+            <div class="key" data-note="G" aria-label="G">
                 <span class="key-label">G</span>
             </div>
-            <div class="key black" data-note="G#">
+            <div class="key black" data-note="G#" aria-label="G#">
                 <span class="key-label">G#</span>
             </div>
         </div>
         <div class="key-container">
-            <div class="key" data-note="A">
+            <div class="key" data-note="A" aria-label="A">
                 <span class="key-label">A</span>
             </div>
-            <div class="key black" data-note="A#">
+            <div class="key black" data-note="A#" aria-label="A#">
                 <span class="key-label">A#</span>
             </div>
         </div>
         <div class="key-container">
-            <div class="key" data-note="B">
+            <div class="key" data-note="B" aria-label="B">
                 <span class="key-label">B</span>
             </div>
         </div>
     </div>
 
     <script>
-        // Base frequencies for octave 4
         const baseFrequencies = {
             'C': 261.63,
             'C#': 277.18,
@@ -220,26 +227,24 @@
         };
 
         let currentOctave = 4;
-
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
-        // Play a note based on the selected preset
         const presetSelect = document.getElementById('preset-select');
+        const octaveDisplay = document.getElementById('current-octave');
 
         function playNote(note) {
             const selectedPreset = presetSelect.value;
+            const frequency = baseFrequencies[note] * Math.pow(2, currentOctave - 4);
 
             if (selectedPreset === 'samples') {
                 const audio = new Audio(`sounds/${note}${currentOctave}.mp3`);
                 audio.currentTime = 0;
-                audio.play();
+                audio.play().catch(err => console.error('Error playing sample:', err));
             } else {
                 const oscillator = audioContext.createOscillator();
                 const gainNode = audioContext.createGain();
-                const frequency = baseFrequencies[note] * Math.pow(2, currentOctave - 4);
 
                 oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-                oscillator.type = selectedPreset; // Use waveform type (sine, square, etc.)
+                oscillator.type = selectedPreset;
 
                 oscillator.connect(gainNode);
                 gainNode.connect(audioContext.destination);
@@ -253,7 +258,6 @@
         const keys = document.querySelectorAll('.key');
         keys.forEach(key => {
             const note = key.dataset.note;
-
             key.addEventListener('mousedown', () => playNote(note));
             key.addEventListener('touchstart', (e) => {
                 e.preventDefault();
@@ -261,8 +265,16 @@
             });
         });
 
-        // Octave controls
-        const octaveDisplay = document.getElementById('current-octave');
+        document.addEventListener('keydown', (e) => {
+            const keyMap = {
+                'a': 'C', 'w': 'C#', 's': 'D', 'e': 'D#', 'd': 'E', 'f': 'F',
+                't': 'F#', 'g': 'G', 'y': 'G#', 'h': 'A', 'u': 'A#', 'j': 'B'
+            };
+            const note = keyMap[e.key.toLowerCase()];
+            if (note) {
+                playNote(note);
+            }
+        });
 
         document.getElementById('prev-octave').addEventListener('click', () => {
             if (currentOctave > 1) {
